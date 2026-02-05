@@ -7,14 +7,20 @@ set -e
 
 #helper function that prints usage
 usage () {
-  echo "Usage: $0 [--1|--2|--3|--4|--help]"
+  echo "Usage: $0 [--1|--2|--3|--4|--5|--6|--help]"
   echo ""
   echo "Options:"
   echo "   --help   Shows this message"
+  echo ""
+  echo "   Monitoring Server (central):"
   echo "   --1      Step 1: Installs Prometheus"
   echo "   --2      Step 2: Installs Grafana"
-  echo "   --3      Step 3: Installs node_exporter"
   echo "   --4      Step 4: Installs AvalancheGo Grafana dashboards"
+  echo "   --5      Step 5: Installs Loki (log aggregation server)"
+  echo ""
+  echo "   Avalanche Nodes (each node):"
+  echo "   --3      Step 3: Installs node_exporter (metrics)"
+  echo "   --6      Step 6: Installs Promtail (log shipper to Loki)"
   echo ""
   echo "Run without any options, script will download and install latest version of AvalancheGo dashboards."
 }
@@ -261,6 +267,289 @@ install_exporter() {
   echo "Reach out to us on https://chat.avax.network if you're having problems."
 }
 
+install_loki() {
+  echo "AvalancheGo monitoring installer"
+  echo "--------------------------------"
+  echo "STEP 5: Installing Loki (log aggregation server)"
+  echo
+  echo "This should be run on your MONITORING SERVER (where Grafana runs)."
+  echo
+  get_environment
+  check_reqs
+
+  mkdir -p /tmp/avalanche-monitoring-installer/loki
+  cd /tmp/avalanche-monitoring-installer/loki
+
+  # Get latest Loki version
+  lokiVersion="$(curl -s https://api.github.com/repos/grafana/loki/releases/latest | grep -Po '"tag_name": "v\K[^"]*')"
+  echo "Latest Loki version: $lokiVersion"
+
+  lokiFileName="https://github.com/grafana/loki/releases/download/v${lokiVersion}/loki-linux-${getArch}.zip"
+  echo "Downloading: $lokiFileName"
+  wget -nv --show-progress -O loki.zip "$lokiFileName"
+
+  if ! command -v unzip &> /dev/null; then
+    echo "Installing unzip..."
+    sudo apt-get install unzip -y
+  fi
+
+  unzip -o loki.zip
+  sudo mv "loki-linux-${getArch}" /usr/local/bin/loki
+  sudo chmod +x /usr/local/bin/loki
+
+  echo "Installed Loki version:"
+  /usr/local/bin/loki --version
+
+  # Create loki user
+  id -u loki &>/dev/null || sudo useradd -M -r -s /bin/false loki
+
+  # Create directories
+  sudo mkdir -p /etc/loki /var/lib/loki
+  sudo chown -R loki:loki /var/lib/loki
+
+  # Create config file
+  echo "Creating Loki configuration..."
+  cat > loki-config.yaml << 'LOKICONFIG'
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /var/lib/loki
+  storage:
+    filesystem:
+      chunks_directory: /var/lib/loki/chunks
+      rules_directory: /var/lib/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+limits_config:
+  retention_period: 720h
+
+storage_config:
+  filesystem:
+    directory: /var/lib/loki/chunks
+LOKICONFIG
+
+  sudo cp loki-config.yaml /etc/loki/loki-config.yaml
+
+  # Create systemd service
+  echo "Creating Loki service..."
+  cat > loki.service << 'LOKISERVICE'
+[Unit]
+Description=Loki Log Aggregation System
+Documentation=https://grafana.com/docs/loki/latest/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=loki
+Group=loki
+ExecStart=/usr/local/bin/loki -config.file=/etc/loki/loki-config.yaml
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+LOKISERVICE
+
+  sudo cp loki.service /etc/systemd/system/loki.service
+
+  sudo systemctl daemon-reload
+  sudo systemctl start loki
+  sudo systemctl enable loki
+
+  echo
+  echo "Done!"
+  echo
+  echo "Loki service should be up and running now."
+  echo "To check that the service is running use the following command (q to exit):"
+  echo "sudo systemctl status loki"
+  echo
+  echo "Loki API is available on http://localhost:3100"
+  echo "To verify: curl http://localhost:3100/ready"
+  echo
+  echo "Next steps:"
+  echo "1. Run --4 to install dashboards (includes Loki datasource)"
+  echo "2. Run --6 on each Avalanche node to install Promtail"
+  echo
+
+  exit 0
+}
+
+install_promtail() {
+  echo "AvalancheGo monitoring installer"
+  echo "--------------------------------"
+  echo "STEP 6: Installing Promtail (log shipper)"
+  echo
+  echo "This should be run on each AVALANCHE NODE to ship logs to Loki."
+  echo
+  get_environment
+  check_reqs
+
+  # Prompt for Loki server address
+  read -p "Enter Loki server address (e.g., 192.168.1.100 or your-monitoring-server.com): " LOKI_HOST
+  if [ -z "$LOKI_HOST" ]; then
+    echo "Loki server address is required. Exiting."
+    exit 1
+  fi
+
+  read -p "Enter Loki port [3100]: " LOKI_PORT
+  LOKI_PORT=${LOKI_PORT:-3100}
+
+  read -p "Enter a name for this node (e.g., aws-validator-01): " NODE_NAME
+  if [ -z "$NODE_NAME" ]; then
+    NODE_NAME="$(hostname)"
+    echo "Using hostname: $NODE_NAME"
+  fi
+
+  read -p "Enter network identifier (e.g., mainnet, fuji) [mainnet]: " NETWORK_UUID
+  NETWORK_UUID=${NETWORK_UUID:-mainnet}
+
+  mkdir -p /tmp/avalanche-monitoring-installer/promtail
+  cd /tmp/avalanche-monitoring-installer/promtail
+
+  # Get latest Loki/Promtail version
+  lokiVersion="$(curl -s https://api.github.com/repos/grafana/loki/releases/latest | grep -Po '"tag_name": "v\K[^"]*')"
+  echo "Latest Promtail version: $lokiVersion"
+
+  promtailFileName="https://github.com/grafana/loki/releases/download/v${lokiVersion}/promtail-linux-${getArch}.zip"
+  echo "Downloading: $promtailFileName"
+  wget -nv --show-progress -O promtail.zip "$promtailFileName"
+
+  if ! command -v unzip &> /dev/null; then
+    echo "Installing unzip..."
+    sudo apt-get install unzip -y
+  fi
+
+  unzip -o promtail.zip
+  sudo mv "promtail-linux-${getArch}" /usr/local/bin/promtail
+  sudo chmod +x /usr/local/bin/promtail
+
+  echo "Installed Promtail version:"
+  /usr/local/bin/promtail --version
+
+  # Create directories
+  sudo mkdir -p /etc/promtail /var/lib/promtail
+
+  # Detect AvalancheGo log path
+  AVAGO_LOG_PATH="/var/log/avalanchego"
+  if [ -d "$HOME/.avalanchego/logs" ]; then
+    AVAGO_LOG_PATH="$HOME/.avalanchego/logs"
+  fi
+  read -p "Enter AvalancheGo log path [$AVAGO_LOG_PATH]: " USER_LOG_PATH
+  AVAGO_LOG_PATH=${USER_LOG_PATH:-$AVAGO_LOG_PATH}
+
+  # Create config file
+  echo "Creating Promtail configuration..."
+  cat > promtail-config.yaml << PROMTAILCONFIG
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/lib/promtail/positions.yaml
+
+clients:
+  - url: http://${LOKI_HOST}:${LOKI_PORT}/loki/api/v1/push
+
+scrape_configs:
+  - job_name: avalanchego
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: avalanchego
+          node: "${NODE_NAME}"
+          network_uuid: "${NETWORK_UUID}"
+          __path__: ${AVAGO_LOG_PATH}/*.log
+
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2}|^\[|^{'
+          max_wait_time: 3s
+
+  - job_name: systemd
+    journal:
+      labels:
+        job: systemd
+        node: "${NODE_NAME}"
+        network_uuid: "${NETWORK_UUID}"
+    relabel_configs:
+      - source_labels: ['__journal__systemd_unit']
+        target_label: 'unit'
+      - source_labels: ['__journal__systemd_unit']
+        regex: 'avalanchego.*'
+        action: keep
+PROMTAILCONFIG
+
+  sudo cp promtail-config.yaml /etc/promtail/promtail-config.yaml
+
+  # Create systemd service
+  echo "Creating Promtail service..."
+  cat > promtail.service << 'PROMTAILSERVICE'
+[Unit]
+Description=Promtail Log Shipper
+Documentation=https://grafana.com/docs/loki/latest/clients/promtail/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/promtail -config.file=/etc/promtail/promtail-config.yaml
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+PROMTAILSERVICE
+
+  sudo cp promtail.service /etc/systemd/system/promtail.service
+
+  sudo systemctl daemon-reload
+  sudo systemctl start promtail
+  sudo systemctl enable promtail
+
+  echo
+  echo "Done!"
+  echo
+  echo "Promtail service should be up and running now."
+  echo "To check that the service is running use the following command (q to exit):"
+  echo "sudo systemctl status promtail"
+  echo
+  echo "Promtail is configured to:"
+  echo "  - Ship logs to: http://${LOKI_HOST}:${LOKI_PORT}"
+  echo "  - Node name: ${NODE_NAME}"
+  echo "  - Network: ${NETWORK_UUID}"
+  echo "  - Log path: ${AVAGO_LOG_PATH}/*.log"
+  echo
+  echo "To verify logs are being shipped, check the Logs dashboard in Grafana."
+  echo
+
+  exit 0
+}
+
 install_dashboards() {
   #check for installation
   if test -f "/etc/grafana/grafana.ini"; then
@@ -322,7 +611,7 @@ install_dashboards() {
       echo "      foldersFromFilesStructure: true"
     } >>avalanche.yaml
     sudo cp avalanche.yaml /etc/grafana/provisioning/dashboards/
-    echo "Provisioning datasource..."
+    echo "Provisioning datasources..."
     {
       echo "apiVersion: 1"
       echo ""
@@ -333,6 +622,13 @@ install_dashboards() {
       echo "    orgId: 1"
       echo "    url: http://localhost:9090"
       echo "    isDefault: true"
+      echo "    version: 1"
+      echo "    editable: false"
+      echo "  - name: Loki"
+      echo "    type: loki"
+      echo "    access: proxy"
+      echo "    orgId: 1"
+      echo "    url: http://localhost:3100"
       echo "    version: 1"
       echo "    editable: false"
     } >>prom.yaml
@@ -365,6 +661,14 @@ then
       ;;
     --4) #install AvalancheGo dashboards
       install_dashboards
+      exit 0
+      ;;
+    --5) #install Loki
+      install_loki
+      exit 0
+      ;;
+    --6) #install Promtail
+      install_promtail
       exit 0
       ;;
     --help)
