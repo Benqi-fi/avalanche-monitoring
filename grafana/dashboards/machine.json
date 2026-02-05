@@ -783,7 +783,7 @@
       "1d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "Machine Metrics",
   "uid": "DHT8r2znz",
   "version": 2,

@@ -221,7 +221,7 @@
       "1d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "Logs",
   "uid": "liz0yRCZz",
   "version": 6,

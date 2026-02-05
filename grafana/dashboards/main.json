@@ -1725,7 +1725,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "browser",
   "title": "Avalanche Main Dashboard",
   "uid": "kBQpRdWnk",
   "version": 9,

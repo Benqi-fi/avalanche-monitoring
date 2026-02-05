@@ -1798,7 +1798,7 @@
       "1d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "Subnets",
   "uid": "Gl1I21mnk",
   "version": 5,

@@ -3019,7 +3019,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "America/New_York",
+  "timezone": "browser",
   "title": "C-Chain",
   "uid": "Gl1I20mnk1",
   "version": 1

@@ -1379,7 +1379,7 @@
       "1d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "X-Chain",
   "uid": "ceRH2Am7z",
   "version": 52,

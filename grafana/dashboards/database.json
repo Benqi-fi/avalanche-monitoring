@@ -1006,7 +1006,7 @@
       "1d"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "Database",
   "uid": "R8N89hznk",
   "version": 17
