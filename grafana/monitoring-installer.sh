@@ -421,8 +421,7 @@ install_promtail() {
     echo "Using hostname: $NODE_NAME"
   fi
 
-  read -p "Enter network identifier (e.g., mainnet, fuji) [mainnet]: " NETWORK_UUID
-  NETWORK_UUID=${NETWORK_UUID:-mainnet}
+  NETWORK_UUID="mainnet"
 
   mkdir -p /tmp/avalanche-monitoring-installer/promtail
   cd /tmp/avalanche-monitoring-installer/promtail
