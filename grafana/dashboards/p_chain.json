@@ -804,7 +804,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "max(increase(avalanche_handler_messages{chain=\"P\", op=\"chits\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
+          "expr": "max by (node) (increase(avalanche_handler_messages{chain=\"P\", op=\"chits\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "hide": true,
           "refId": "A"
         },
@@ -813,7 +813,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "max(increase(avalanche_handler_messages{chain=\"P\", op=\"query_failed\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
+          "expr": "max by (node) (increase(avalanche_handler_messages{chain=\"P\", op=\"query_failed\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "hide": true,
           "refId": "B"
         },

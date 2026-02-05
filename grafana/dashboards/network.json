@@ -1306,7 +1306,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_network_msgs{io=\"sent\", op=~\"pull_query|push_query\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
+          "expr": "sum by (node) (increase(avalanche_network_msgs{io=\"sent\", op=~\"pull_query|push_query\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "interval": "",
           "legendFormat": "Messages {{node}}",
           "refId": "A",
@@ -1317,7 +1317,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_snowman_blks_accepted_count{chain=~\"C|P|X\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
+          "expr": "sum by (node) (increase(avalanche_snowman_blks_accepted_count{chain=~\"C|P|X\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "interval": "",
           "legendFormat": "Messages {{node}}",
           "refId": "B",
@@ -2764,7 +2764,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(avalanche_handler_expired[1m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_handler_expired[1m]) or 0 * up)",
           "interval": "",
           "legendFormat": "Messages Dropped {{node}}",
           "refId": "A"

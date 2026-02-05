@@ -166,7 +166,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=~\"avalanchego-machine\", node=~\"$node\", mode=\"idle\"}[1m])) by (instance)) * 100",
+          "expr": "(1 - avg by (node) (irate(node_cpu_seconds_total{job=~\"avalanchego-machine\", node=~\"$node\", mode=\"idle\"}[1m])) by (node)) * 100",
           "interval": "",
           "legendFormat": "{{node}} CPU",
           "refId": "A"
@@ -629,7 +629,7 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "max(((node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"} - node_filesystem_free_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) / node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) * 100) by (instance)",
+          "expr": "max by (node) (((node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"} - node_filesystem_free_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) / node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) * 100) by (node)",
           "interval": "",
           "legendFormat": "{{node}} Disk",
           "refId": "A"

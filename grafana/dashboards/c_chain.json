@@ -1444,7 +1444,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "max(increase(avalanche_handler_messages{chain=\"C\", op=\"chits\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
+          "expr": "max by (node) (increase(avalanche_handler_messages{chain=\"C\", op=\"chits\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "hide": true,
           "refId": "A"
         },
@@ -1453,7 +1453,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "max(increase(avalanche_handler_messages{chain=\"C\", op=\"query_failed\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
+          "expr": "max by (node) (increase(avalanche_handler_messages{chain=\"C\", op=\"query_failed\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "hide": true,
           "refId": "B"
         },
@@ -2171,7 +2171,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_decided_cache_get_count{chain=\"C\", result=\"hit\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_decided_cache_get_count{chain=\"C\", result=\"hit\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Hits {{node}}",
@@ -2182,7 +2182,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_decided_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_decided_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Calls {{node}}",
@@ -2291,7 +2291,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_bytes_to_id_cache_get_count{chain=\"C\", result=\"hit\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_bytes_to_id_cache_get_count{chain=\"C\", result=\"hit\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Hits {{node}}",
@@ -2302,7 +2302,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_bytes_to_id_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_bytes_to_id_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Calls {{node}}",
@@ -2412,7 +2412,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_unverified_cache_get_count{chain=\"C\", result=\"hit\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_unverified_cache_get_count{chain=\"C\", result=\"hit\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Hits {{node}}",
@@ -2423,7 +2423,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_unverified_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_unverified_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Calls {{node}}",
@@ -2533,7 +2533,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_missing_cache_get_count{chain=\"C\", result=\"hit\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_missing_cache_get_count{chain=\"C\", result=\"hit\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Hits {{node}}",
@@ -2544,7 +2544,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_evm_chain_state_missing_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_evm_chain_state_missing_cache_get_count{chain=\"C\", node=~\"$node\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
           "legendFormat": "Calls {{node}}",
@@ -2770,7 +2770,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(avalanche_meterchainvm_parse_block_sum{chain=\"C\", node=~\"$node\"}[5m]) / 1000000) / sum(rate(avalanche_meterchainvm_parse_block_count{chain=\"C\", node=~\"$node\"}[5m]))",
+          "expr": "sum by (node) (rate(avalanche_meterchainvm_parse_block_sum{chain=\"C\", node=~\"$node\"}[5m]) / 1000000) / sum by (node) (rate(avalanche_meterchainvm_parse_block_count{chain=\"C\", node=~\"$node\"}[5m]))",
           "legendFormat": "{{node}}",
           "range": true,
           "refId": "A"
@@ -2864,7 +2864,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(avalanche_meterchainvm_verify_sum{chain=\"C\", node=~\"$node\"}[5m]) / 1000000) / sum(rate(avalanche_meterchainvm_verify_count{chain=\"C\", node=~\"$node\"}[5m]))",
+          "expr": "sum by (node) (rate(avalanche_meterchainvm_verify_sum{chain=\"C\", node=~\"$node\"}[5m]) / 1000000) / sum by (node) (rate(avalanche_meterchainvm_verify_count{chain=\"C\", node=~\"$node\"}[5m]))",
           "legendFormat": "{{node}}",
           "range": true,
           "refId": "A"
@@ -2958,7 +2958,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(avalanche_meterchainvm_accept_sum{chain=\"C\", node=~\"$node\"}[5m]) / 1000000) / sum(rate(avalanche_meterchainvm_accept_count{chain=\"C\", node=~\"$node\"}[5m]))",
+          "expr": "sum by (node) (rate(avalanche_meterchainvm_accept_sum{chain=\"C\", node=~\"$node\"}[5m]) / 1000000) / sum by (node) (rate(avalanche_meterchainvm_accept_count{chain=\"C\", node=~\"$node\"}[5m]))",
           "legendFormat": "{{node}}",
           "range": true,
           "refId": "A"
