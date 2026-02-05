@@ -324,7 +324,7 @@
           },
           "expr": "rate(avalanche_snowman_blks_accepted_sum{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[5m]) / rate(avalanche_snowman_blks_accepted_count{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "Avg Acceptance Latency",
+          "legendFormat": "{{node}} Avg Acceptance Latency",
           "refId": "A"
         }
       ],
@@ -422,7 +422,7 @@
           },
           "expr": "rate(avalanche_snowman_blks_rejected_sum{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[5m]) / rate(avalanche_snowman_blks_rejected_count{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "Avg Rejection Latency",
+          "legendFormat": "{{node}} Avg Rejection Latency",
           "refId": "A"
         }
       ],
@@ -1015,7 +1015,7 @@
           "exemplar": true,
           "expr": "avalanche_handler_sync_unprocessed_msgs_count{chain=\"P\"}",
           "interval": "",
-          "legendFormat": "{{ op }}",
+          "legendFormat": "{{node}} {{ op }}",
           "refId": "A"
         },
         {
@@ -1026,7 +1026,7 @@
           "exemplar": true,
           "expr": "avalanche_handler_async_unprocessed_msgs_count{chain=\"P\"}",
           "interval": "",
-          "legendFormat": "{{ op }}",
+          "legendFormat": "{{node}} {{ op }}",
           "refId": "B"
         }
       ],
@@ -1120,7 +1120,7 @@
           "exemplar": true,
           "expr": "increase(avalanche_handler_expired{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[1m]) or 0 * up",
           "interval": "",
-          "legendFormat": "{{ op }}",
+          "legendFormat": "{{node}} {{ op }}",
           "refId": "A"
         }
       ],
