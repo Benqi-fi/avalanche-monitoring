@@ -290,14 +290,14 @@ install_dashboards() {
   mkdir -p /tmp/avalanche-monitoring-installer/dashboards-install
   cd /tmp/avalanche-monitoring-installer/dashboards-install
 
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/c_chain.json
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/database.json
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/logs.json
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/machine.json
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/main.json
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/network.json
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/p_chain.json
-  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/x_chain.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/c_chain.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/database.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/logs.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/machine.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/main.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/network.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/p_chain.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/dashboards/x_chain.json
 
   sudo mkdir -p /etc/grafana/dashboards
   sudo cp *.json /etc/grafana/dashboards

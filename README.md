@@ -5,7 +5,7 @@ Grafana dashboards and installer script for monitoring Avalanche nodes.
 ## Quick Start
 
 ```bash
-curl -sSfLO https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/monitoring-installer.sh
+curl -sSfLO https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/main/grafana/monitoring-installer.sh
 chmod +x monitoring-installer.sh
 ./monitoring-installer.sh --help
 ```
