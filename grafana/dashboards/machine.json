@@ -753,14 +753,13 @@
         "type": "datasource"
       },
       {
-        "allValue": ".*",
         "datasource": {
           "type": "prometheus",
           "uid": "${datasource}"
         },
         "definition": "label_values(node)",
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": "Node",
         "multi": true,
         "name": "node",
