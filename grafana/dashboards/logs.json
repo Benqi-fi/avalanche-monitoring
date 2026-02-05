@@ -94,7 +94,7 @@
             "uid": "${loki_datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({network_uuid=~\".+\"} |~ \"$search\"[$__interval]))",
+          "expr": "sum by (node) (count_over_time({network_uuid=\"mainnet\", node=~\"$node\"} |~ \"$search\"[$__interval]))",
           "queryType": "range",
           "refId": "A"
         }
@@ -159,7 +159,7 @@
             "uid": "${loki_datasource}"
           },
           "editorMode": "code",
-          "expr": "{network_uuid=~\".+\"} |~ \"$search\"",
+          "expr": "{network_uuid=\"mainnet\", node=~\"$node\"} |~ \"$search\" | line_format \"[{{.node}}] {{__line__}}\"",
           "queryType": "range",
           "refId": "A"
         }
@@ -188,7 +188,27 @@
         "type": "datasource"
       },
       {
+        "datasource": {
+          "type": "loki",
+          "uid": "${loki_datasource}"
+        },
+        "definition": "label_values(node)",
         "hide": 0,
+        "includeAll": true,
+        "label": "Node",
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": "label_values(node)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "hide": 0,
+        "label": "Search",
         "name": "search",
         "query": "",
         "skipUrlSync": false,
