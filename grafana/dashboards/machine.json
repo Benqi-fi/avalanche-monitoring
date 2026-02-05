@@ -166,9 +166,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=~\"avalanchego-machine\", mode=\"idle\"}[1m])) by (instance)) * 100",
+          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=~\"avalanchego-machine\", node=~\"$node\", mode=\"idle\"}[1m])) by (instance)) * 100",
           "interval": "",
-          "legendFormat": "CPU",
+          "legendFormat": "{{node}} CPU",
           "refId": "A"
         }
       ],
@@ -259,14 +259,14 @@
         {
           "expr": "rate(node_network_receive_bytes_total[5m])",
           "interval": "",
-          "legendFormat": "Receive {{device}}",
+          "legendFormat": "{{node}} Receive {{device}}",
           "refId": "A"
         },
         {
           "expr": "rate(node_network_transmit_bytes_total[5m])",
           "hide": false,
           "interval": "",
-          "legendFormat": "Transmit {{device}}",
+          "legendFormat": "{{node}} Transmit {{device}}",
           "refId": "B"
         }
       ],
@@ -357,7 +357,7 @@
           },
           "expr": "rate(node_disk_read_bytes_total[5m])",
           "interval": "",
-          "legendFormat": "Read {{device}}",
+          "legendFormat": "{{node}} Read {{device}}",
           "refId": "A"
         },
         {
@@ -368,7 +368,7 @@
           "expr": "rate(node_disk_written_bytes_total[5m])",
           "hide": false,
           "interval": "",
-          "legendFormat": "Write {{device}}",
+          "legendFormat": "{{node}} Write {{device}}",
           "refId": "B"
         }
       ],
@@ -502,9 +502,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "100 * (node_memory_MemTotal_bytes{job=~\"avalanchego-machine\"} - node_memory_MemFree_bytes{job=~\"avalanchego-machine\"} - node_memory_Buffers_bytes{job=~\"avalanchego-machine\"} - node_memory_Cached_bytes{job=~\"avalanchego-machine\"}) / node_memory_MemTotal_bytes{job=~\"avalanchego-machine\"}",
+          "expr": "100 * (node_memory_MemTotal_bytes{job=~\"avalanchego-machine\", node=~\"$node\"} - node_memory_MemFree_bytes{job=~\"avalanchego-machine\", node=~\"$node\"} - node_memory_Buffers_bytes{job=~\"avalanchego-machine\", node=~\"$node\"} - node_memory_Cached_bytes{job=~\"avalanchego-machine\", node=~\"$node\"}) / node_memory_MemTotal_bytes{job=~\"avalanchego-machine\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Memory",
+          "legendFormat": "{{node}} Memory",
           "refId": "A"
         }
       ],
@@ -629,9 +629,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "max(((node_filesystem_size_bytes{job=~\"avalanchego-machine\", fstype=~\"ext4|vfat\"} - node_filesystem_free_bytes{job=~\"avalanchego-machine\", fstype=~\"ext4|vfat\"}) / node_filesystem_size_bytes{job=~\"avalanchego-machine\", fstype=~\"ext4|vfat\"}) * 100) by (instance)",
+          "expr": "max(((node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"} - node_filesystem_free_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) / node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) * 100) by (instance)",
           "interval": "",
-          "legendFormat": "Disk",
+          "legendFormat": "{{node}} Disk",
           "refId": "A"
         }
       ],
@@ -719,9 +719,9 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "avalanche_process_go_goroutines{job=~\"avalanchego\"}",
+          "expr": "avalanche_process_go_goroutines{job=~\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "goroutines",
+          "legendFormat": "{{node}} goroutines",
           "range": true,
           "refId": "A"
         }
@@ -751,6 +751,26 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(node)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Node",
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": "label_values(node)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "datasource": {

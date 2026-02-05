@@ -848,9 +848,9 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "round(increase(avalanche_snowman_blks_rejected_count{chain=\"$chain\", job=\"avalanchego\"}[1m]))>0",
+          "expr": "round(increase(avalanche_snowman_blks_rejected_count{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[1m]))>0",
           "interval": "",
-          "legendFormat": "Blocks {{node_id}}",
+          "legendFormat": "Blocks {{node}}",
           "range": true,
           "refId": "A"
         }
@@ -950,9 +950,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "round(increase(avalanche_snowman_blks_accepted_count{chain=\"$chain\", job=\"avalanchego\"}[1m]))>0",
+          "expr": "round(increase(avalanche_snowman_blks_accepted_count{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[1m]))>0",
           "interval": "",
-          "legendFormat": "Blocks {{node_id}}",
+          "legendFormat": "Blocks {{node}}",
           "refId": "A"
         }
       ],
@@ -1051,9 +1051,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(avalanche_snowman_blks_rejected_sum{chain=\"$chain\", job=\"avalanchego\"}[5m]) / rate(avalanche_snowman_blks_rejected_count{chain=\"$chain\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_snowman_blks_rejected_sum{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m]) / rate(avalanche_snowman_blks_rejected_count{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "Avg Rejection Latency {{node_id}}",
+          "legendFormat": "Avg Rejection Latency {{node}}",
           "refId": "A"
         }
       ],
@@ -1149,9 +1149,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(avalanche_snowman_blks_accepted_sum{chain=\"$chain\", job=\"avalanchego\"}[5m]) / rate(avalanche_snowman_blks_accepted_count{chain=\"$chain\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_snowman_blks_accepted_sum{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m]) / rate(avalanche_snowman_blks_accepted_count{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "Avg Acceptance Latency {{node_id}}",
+          "legendFormat": "Avg Acceptance Latency {{node}}",
           "refId": "A"
         }
       ],
@@ -1247,7 +1247,7 @@
           "exemplar": true,
           "expr": "avalanche_snowman_polls{chain=\"$chain\"} > 0",
           "interval": "",
-          "legendFormat": "Polls {{node_id}}",
+          "legendFormat": "Polls {{node}}",
           "refId": "A"
         }
       ],
@@ -1341,9 +1341,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "avalanche_snowman_blks_processing{chain=\"$chain\", job=\"avalanchego\"}>0",
+          "expr": "avalanche_snowman_blks_processing{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}>0",
           "interval": "",
-          "legendFormat": "Blocks {{node_id}}",
+          "legendFormat": "Blocks {{node}}",
           "refId": "A"
         }
       ],
@@ -1444,7 +1444,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "max(increase(avalanche_handler_messages{chain=\"$chain\", op=\"chits\", job=\"avalanchego\"}[5m]))",
+          "expr": "max(increase(avalanche_handler_messages{chain=\"$chain\", op=\"chits\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "hide": true,
           "refId": "A"
         },
@@ -1453,7 +1453,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "max(increase(avalanche_handler_messages{chain=\"$chain\", op=\"query_failed\", job=\"avalanchego\"}[5m]))",
+          "expr": "max(increase(avalanche_handler_messages{chain=\"$chain\", op=\"query_failed\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "hide": true,
           "refId": "B"
         },
@@ -1562,9 +1562,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "rate(avalanche_handler_message_handling_time{chain=\"$chain\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_handler_message_handling_time{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -1663,9 +1663,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "rate(avalanche_handler_message_handling_time{chain=\"$chain\", job=\"avalanchego\"}[5m])/rate(avalanche_handler_messages{chain=\"$chain\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_handler_message_handling_time{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m])/rate(avalanche_handler_messages{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -1763,7 +1763,7 @@
           "exemplar": true,
           "expr": "avalanche_handler_sync_unprocessed_msgs_count{chain=\"$chain\"}",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         },
         {
@@ -1870,9 +1870,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "increase(avalanche_handler_expired{chain=\"$chain\", job=\"avalanchego\"}[1m]) or 0 * up",
+          "expr": "increase(avalanche_handler_expired{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[1m]) or 0 * up",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -1971,9 +1971,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "rate(avalanche_handler_messages{chain=\"$chain\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_handler_messages{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -2073,9 +2073,9 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "avg_over_time(avalanche_benchlist_benched_weight{chain=\"$chain\", job=\"avalanchego\"}[15m]) / 10^9",
+          "expr": "avg_over_time(avalanche_benchlist_benched_weight{chain=\"$chain\", job=\"avalanchego\", node=~\"$node\"}[15m]) / 10^9",
           "interval": "",
-          "legendFormat": "AVAX Benched {{node_id}}",
+          "legendFormat": "AVAX Benched {{node}}",
           "refId": "A"
         }
       ],
@@ -2174,7 +2174,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_decided_cache_get_count{chain=\"$chain\", result=\"hit\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Hits {{node_id}}",
+          "legendFormat": "Hits {{node}}",
           "refId": "A"
         },
         {
@@ -2185,7 +2185,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_decided_cache_get_count{chain=\"$chain\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Calls {{node_id}}",
+          "legendFormat": "Calls {{node}}",
           "refId": "B"
         },
         {
@@ -2294,7 +2294,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_bytes_to_id_cache_get_count{chain=\"$chain\", result=\"hit\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Hits {{node_id}}",
+          "legendFormat": "Hits {{node}}",
           "refId": "A"
         },
         {
@@ -2305,7 +2305,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_bytes_to_id_cache_get_count{chain=\"$chain\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Calls {{node_id}}",
+          "legendFormat": "Calls {{node}}",
           "refId": "B"
         },
         {
@@ -2415,7 +2415,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_unverified_cache_get_count{chain=\"$chain\", result=\"hit\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Hits {{node_id}}",
+          "legendFormat": "Hits {{node}}",
           "refId": "A"
         },
         {
@@ -2426,7 +2426,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_unverified_cache_get_count{chain=\"$chain\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Calls {{node_id}}",
+          "legendFormat": "Calls {{node}}",
           "refId": "B"
         },
         {
@@ -2536,7 +2536,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_missing_cache_get_count{chain=\"$chain\", result=\"hit\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Hits {{node_id}}",
+          "legendFormat": "Hits {{node}}",
           "refId": "A"
         },
         {
@@ -2547,7 +2547,7 @@
           "expr": "sum(increase(avalanche_evm_chain_state_missing_cache_get_count{chain=\"$chain\"}[5m]) or 0 * up)",
           "hide": true,
           "interval": "",
-          "legendFormat": "Calls {{node_id}}",
+          "legendFormat": "Calls {{node}}",
           "refId": "B"
         },
         {
@@ -2989,6 +2989,26 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(node)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Node",
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": "label_values(node)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "baseFilters": [],

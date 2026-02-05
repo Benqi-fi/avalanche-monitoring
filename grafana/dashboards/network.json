@@ -158,9 +158,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_node_uptime_weighted_average{job=\"avalanchego\"}",
+          "expr": "avalanche_network_node_uptime_weighted_average{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Uptime average {{node_id}}",
+          "legendFormat": "Uptime average {{node}}",
           "refId": "A"
         }
       ],
@@ -266,9 +266,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_node_uptime_rewarding_stake{job=\"avalanchego\"}",
+          "expr": "avalanche_network_node_uptime_rewarding_stake{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Rewarding stake {{node_id}}",
+          "legendFormat": "Rewarding stake {{node}}",
           "refId": "A"
         }
       ],
@@ -394,10 +394,10 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_peers{job=\"avalanchego\"}",
+          "expr": "avalanche_network_peers{job=\"avalanchego\", node=~\"$node\"}",
           "format": "time_series",
           "interval": "",
-          "legendFormat": "Peers connected {{node_id}}",
+          "legendFormat": "Peers connected {{node}}",
           "refId": "B"
         }
       ],
@@ -489,17 +489,17 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_requests_current_timeout{job=\"avalanchego\"}",
+          "expr": "avalanche_requests_current_timeout{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Timeout {{node_id}}",
+          "legendFormat": "Timeout {{node}}",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "avalanche_requests_average_latency{job=\"avalanchego\"}",
+          "expr": "avalanche_requests_average_latency{job=\"avalanchego\", node=~\"$node\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "Response Time {{node_id}}",
+          "legendFormat": "Response Time {{node}}",
           "refId": "B"
         }
       ],
@@ -589,9 +589,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_requests_outstanding{job=\"avalanchego\"}",
+          "expr": "avalanche_requests_outstanding{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Outstanding Requests {{node_id}}",
+          "legendFormat": "Outstanding Requests {{node}}",
           "refId": "A"
         }
       ],
@@ -684,9 +684,9 @@
       "pluginVersion": "8.0.3",
       "targets": [
         {
-          "expr": "rate(avalanche_network_msgs{io=\"received\", job=\"avalanchego\"}[1m])",
+          "expr": "rate(avalanche_network_msgs{io=\"received\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} compressed={{ compressed }} {{node_id}}",
+          "legendFormat": "{{ op }} compressed={{ compressed }} {{node}}",
           "refId": "A"
         }
       ],
@@ -779,9 +779,9 @@
       "pluginVersion": "8.0.3",
       "targets": [
         {
-          "expr": "rate(avalanche_network_msgs{io=\"sent\", job=\"avalanchego\"}[1m])",
+          "expr": "rate(avalanche_network_msgs{io=\"sent\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} compressed={{ compressed }} {{node_id}}",
+          "legendFormat": "{{ op }} compressed={{ compressed }} {{node}}",
           "refId": "A"
         }
       ],
@@ -876,9 +876,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(avalanche_network_msgs_bytes{io=\"received\", job=\"avalanchego\"}[1m])",
+          "expr": "rate(avalanche_network_msgs_bytes{io=\"received\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -973,9 +973,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(avalanche_network_msgs_bytes{io=\"sent\", job=\"avalanchego\"}[1m])",
+          "expr": "rate(avalanche_network_msgs_bytes{io=\"sent\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -1070,9 +1070,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "increase(avalanche_network_msgs_bytes{io=\"received\", job=\"avalanchego\"}[1m])",
+          "expr": "increase(avalanche_network_msgs_bytes{io=\"received\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A",
           "hide": true
         },
@@ -1081,9 +1081,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "increase(avalanche_network_msgs{io=\"received\", job=\"avalanchego\"}[1m])",
+          "expr": "increase(avalanche_network_msgs{io=\"received\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "B",
           "hide": true
         },
@@ -1189,9 +1189,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "increase(avalanche_network_msgs_bytes{io=\"sent\", job=\"avalanchego\"}[1m])",
+          "expr": "increase(avalanche_network_msgs_bytes{io=\"sent\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A",
           "hide": true
         },
@@ -1200,9 +1200,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "increase(avalanche_network_msgs{io=\"sent\", job=\"avalanchego\"}[1m])",
+          "expr": "increase(avalanche_network_msgs{io=\"sent\", job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "B",
           "hide": true
         },
@@ -1306,9 +1306,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_network_msgs{io=\"sent\", op=~\"pull_query|push_query\", job=\"avalanchego\"}[5m]))",
+          "expr": "sum(increase(avalanche_network_msgs{io=\"sent\", op=~\"pull_query|push_query\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "interval": "",
-          "legendFormat": "Messages {{node_id}}",
+          "legendFormat": "Messages {{node}}",
           "refId": "A",
           "hide": true
         },
@@ -1317,9 +1317,9 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(increase(avalanche_snowman_blks_accepted_count{chain=~\"C|P|X\", job=\"avalanchego\"}[5m]))",
+          "expr": "sum(increase(avalanche_snowman_blks_accepted_count{chain=~\"C|P|X\", job=\"avalanchego\", node=~\"$node\"}[5m]))",
           "interval": "",
-          "legendFormat": "Messages {{node_id}}",
+          "legendFormat": "Messages {{node}}",
           "refId": "B",
           "hide": true
         },
@@ -1421,9 +1421,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_throttler_outbound_awaiting_release{job=\"avalanchego\"}",
+          "expr": "avalanche_network_throttler_outbound_awaiting_release{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Messages {{node_id}}",
+          "legendFormat": "Messages {{node}}",
           "refId": "A"
         }
       ],
@@ -1518,7 +1518,7 @@
         {
           "expr": "avalanche_benchlist_benched_weight/1000000000",
           "interval": "",
-          "legendFormat": "{{ chain }} {{node_id}}",
+          "legendFormat": "{{ chain }} {{node}}",
           "refId": "A"
         }
       ],
@@ -1626,9 +1626,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_byte_throttler_inbound_awaiting_acquire{job=\"avalanchego\"}",
+          "expr": "avalanche_network_byte_throttler_inbound_awaiting_acquire{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Messages Awaiting Acquire {{node_id}}",
+          "legendFormat": "Messages Awaiting Acquire {{node}}",
           "refId": "A"
         }
       ],
@@ -1721,9 +1721,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_byte_throttler_inbound_remaining_validator_bytes{job=\"avalanchego\"}",
+          "expr": "avalanche_network_byte_throttler_inbound_remaining_validator_bytes{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Bytes Remaining {{node_id}}",
+          "legendFormat": "Bytes Remaining {{node}}",
           "refId": "A"
         }
       ],
@@ -1811,9 +1811,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "increase(avalanche_network_byte_throttler_inbound_acquire_latency_sum{job=\"avalanchego\"}[2m])/increase(avalanche_network_byte_throttler_inbound_acquire_latency_count{job=\"avalanchego\"}[2m])",
+          "expr": "increase(avalanche_network_byte_throttler_inbound_acquire_latency_sum{job=\"avalanchego\", node=~\"$node\"}[2m])/increase(avalanche_network_byte_throttler_inbound_acquire_latency_count{job=\"avalanchego\", node=~\"$node\"}[2m])",
           "interval": "",
-          "legendFormat": "Acquire {{node_id}}",
+          "legendFormat": "Acquire {{node}}",
           "refId": "A"
         }
       ],
@@ -1901,9 +1901,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "increase(avalanche_network_buffer_throttler_inbound_acquire_latency_sum{job=\"avalanchego\"}[2m])/increase(avalanche_network_buffer_throttler_inbound_acquire_latency_count{job=\"avalanchego\"}[2m])",
+          "expr": "increase(avalanche_network_buffer_throttler_inbound_acquire_latency_sum{job=\"avalanchego\", node=~\"$node\"}[2m])/increase(avalanche_network_buffer_throttler_inbound_acquire_latency_count{job=\"avalanchego\", node=~\"$node\"}[2m])",
           "interval": "",
-          "legendFormat": "Acquire {{node_id}}",
+          "legendFormat": "Acquire {{node}}",
           "refId": "A"
         }
       ],
@@ -1994,9 +1994,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_byte_throttler_inbound_awaiting_release{job=\"avalanchego\"}",
+          "expr": "avalanche_network_byte_throttler_inbound_awaiting_release{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Messages Awaiting Release {{node_id}}",
+          "legendFormat": "Messages Awaiting Release {{node}}",
           "refId": "A"
         }
       ],
@@ -2086,9 +2086,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_buffer_throttler_inbound_awaiting_acquire{job=\"avalanchego\"}",
+          "expr": "avalanche_network_buffer_throttler_inbound_awaiting_acquire{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Messages Awaiting {{node_id}}",
+          "legendFormat": "Messages Awaiting {{node}}",
           "refId": "A"
         }
       ],
@@ -2180,9 +2180,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_byte_throttler_inbound_remaining_at_large_bytes{job=\"avalanchego\"}",
+          "expr": "avalanche_network_byte_throttler_inbound_remaining_at_large_bytes{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Remaining Bytes {{node_id}}",
+          "legendFormat": "Remaining Bytes {{node}}",
           "refId": "A"
         }
       ],
@@ -2273,9 +2273,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_bandwidth_throttler_inbound_awaiting_acquire{job=\"avalanchego\"}",
+          "expr": "avalanche_network_bandwidth_throttler_inbound_awaiting_acquire{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Messages Awaiting Acquire {{node_id}}",
+          "legendFormat": "Messages Awaiting Acquire {{node}}",
           "refId": "A"
         }
       ],
@@ -2384,9 +2384,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_throttler_outbound_remaining_at_large_bytes{job=\"avalanchego\"}",
+          "expr": "avalanche_network_throttler_outbound_remaining_at_large_bytes{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Bytes Remaining {{node_id}}",
+          "legendFormat": "Bytes Remaining {{node}}",
           "refId": "A"
         }
       ],
@@ -2474,9 +2474,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avalanche_network_throttler_outbound_remaining_validator_bytes{job=\"avalanchego\"}",
+          "expr": "avalanche_network_throttler_outbound_remaining_validator_bytes{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
-          "legendFormat": "Bytes Remaining {{node_id}}",
+          "legendFormat": "Bytes Remaining {{node}}",
           "refId": "A"
         }
       ],
@@ -2584,9 +2584,9 @@
       "pluginVersion": "8.0.3",
       "targets": [
         {
-          "expr": "rate(avalanche_network_msgs_failed_to_send{job=\"avalanchego\"}[1m])",
+          "expr": "rate(avalanche_network_msgs_failed_to_send{job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{node_id}}",
+          "legendFormat": "{{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -2674,7 +2674,7 @@
           "exemplar": true,
           "expr": "increase(avalanche_network_msgs_failed_to_parse[1m])",
           "interval": "",
-          "legendFormat": "Failed to Parse {{node_id}}",
+          "legendFormat": "Failed to Parse {{node}}",
           "refId": "A"
         }
       ],
@@ -2766,7 +2766,7 @@
           "exemplar": true,
           "expr": "sum(increase(avalanche_handler_expired[1m]) or 0 * up)",
           "interval": "",
-          "legendFormat": "Messages Dropped {{node_id}}",
+          "legendFormat": "Messages Dropped {{node}}",
           "refId": "A"
         }
       ],
@@ -2852,9 +2852,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "increase(avalanche_network_throttler_outbound_acquire_failures{job=\"avalanchego\"}[1m])",
+          "expr": "increase(avalanche_network_throttler_outbound_acquire_failures{job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "Messages Dropped {{node_id}}",
+          "legendFormat": "Messages Dropped {{node}}",
           "refId": "A"
         }
       ],
@@ -2940,9 +2940,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "increase(avalanche_network_inbound_conn_throttler_rate_limited{job=\"avalanchego\"}[1m])",
+          "expr": "increase(avalanche_network_inbound_conn_throttler_rate_limited{job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
-          "legendFormat": "Rate-Limited {{node_id}}",
+          "legendFormat": "Rate-Limited {{node}}",
           "refId": "A"
         }
       ],
@@ -3060,7 +3060,7 @@
           "expr": "increase(avalanche_network_codec_compressed_duration{direction=\"compression\"}[5m])/increase(avalanche_network_codec_compressed_count{direction=\"compression\"}[5m])",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{ op }} {{ type }} {{node_id}}",
+          "legendFormat": "{{ op }} {{ type }} {{node}}",
           "refId": "A"
         }
       ],
@@ -3158,7 +3158,7 @@
           },
           "expr": "increase(avalanche_network_codec_compressed_duration{direction=\"decompression\"}[5m])/increase(avalanche_network_codec_compressed_count{direction=\"decompression\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ op }} {{ type }} {{node_id}}",
+          "legendFormat": "{{ op }} {{ type }} {{node}}",
           "refId": "A"
         }
       ],
@@ -3250,7 +3250,7 @@
         {
           "expr": "rate(avalanche_network_msgs_bytes_saved[5m])",
           "interval": "",
-          "legendFormat": "{{ io }} {{ op }} {{node_id}}",
+          "legendFormat": "{{ io }} {{ op }} {{node}}",
           "refId": "A"
         }
       ],
@@ -3279,6 +3279,26 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(node)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Node",
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": "label_values(node)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "datasource": {

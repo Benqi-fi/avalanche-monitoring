@@ -115,7 +115,7 @@
           },
           "expr": "sum(rate(avalanche_meterdb_size{chain=\"all\", method=~\"has|get|iterator_next\"}[5m]))",
           "interval": "",
-          "legendFormat": "Bytes Read {{node_id}}",
+          "legendFormat": "Bytes Read {{node}}",
           "refId": "A"
         }
       ],
@@ -210,7 +210,7 @@
           },
           "expr": "sum(rate(avalanche_meterdb_size{chain=\"all\", method=~\"put|delete|batch_write\"}[5m]))",
           "interval": "",
-          "legendFormat": "Bytes Written {{node_id}}",
+          "legendFormat": "Bytes Written {{node}}",
           "refId": "A"
         }
       ],
@@ -299,9 +299,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "rate(avalanche_meterdb_calls{chain=\"all\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_meterdb_calls{chain=\"all\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -391,9 +391,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "increase(avalanche_meterdb_duration{chain=\"all\", job=\"avalanchego\"}[5m])/increase(avalanche_meterdb_calls{chain=\"all\", job=\"avalanchego\"}[5m])",
+          "expr": "increase(avalanche_meterdb_duration{chain=\"all\", job=\"avalanchego\", node=~\"$node\"}[5m])/increase(avalanche_meterdb_calls{chain=\"all\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -482,9 +482,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "rate(avalanche_meterdb_calls{chain=\"X\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_meterdb_calls{chain=\"X\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -574,9 +574,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "increase(avalanche_meterdb_duration{chain=\"X\", job=\"avalanchego\"}[5m])/increase(avalanche_meterdb_calls{chain=\"X\", job=\"avalanchego\"}[5m])",
+          "expr": "increase(avalanche_meterdb_duration{chain=\"X\", job=\"avalanchego\", node=~\"$node\"}[5m])/increase(avalanche_meterdb_calls{chain=\"X\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -665,9 +665,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "rate(avalanche_meterdb_calls{chain=\"P\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_meterdb_calls{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -757,9 +757,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "increase(avalanche_meterdb_duration{chain=\"P\", job=\"avalanchego\"}[5m])/increase(avalanche_meterdb_calls{chain=\"P\", job=\"avalanchego\"}[5m])",
+          "expr": "increase(avalanche_meterdb_duration{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[5m])/increase(avalanche_meterdb_calls{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -848,9 +848,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "rate(avalanche_meterdb_calls{chain=\"C\", job=\"avalanchego\"}[5m])",
+          "expr": "rate(avalanche_meterdb_calls{chain=\"C\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -940,9 +940,9 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "increase(avalanche_meterdb_duration{chain=\"C\", job=\"avalanchego\"}[5m])/increase(avalanche_meterdb_calls{chain=\"C\", job=\"avalanchego\"}[5m])",
+          "expr": "increase(avalanche_meterdb_duration{chain=\"C\", job=\"avalanchego\", node=~\"$node\"}[5m])/increase(avalanche_meterdb_calls{chain=\"C\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
-          "legendFormat": "{{ method }} {{node_id}}",
+          "legendFormat": "{{ method }} {{node}}",
           "refId": "A"
         }
       ],
@@ -973,6 +973,26 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(node)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Node",
+        "multi": true,
+        "name": "node",
+        "options": [],
+        "query": "label_values(node)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       },
       {
         "datasource": {
