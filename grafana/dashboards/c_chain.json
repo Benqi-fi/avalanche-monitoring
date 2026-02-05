@@ -2567,7 +2567,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "P1809F7CD0C75ACF3"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2658,7 +2658,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P1809F7CD0C75ACF3"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "sum by (chain) (rate(avalanche_meterchainvm_verify_sum{chain=\"$chain\"}[1m])) / sum by (chain) (rate(avalanche_meterchainvm_parse_block_sum{chain=\"$chain\"}[1m]) + rate(avalanche_meterchainvm_verify_sum{chain=\"$chain\"}[1m]) + rate(avalanche_meterchainvm_accept_sum{chain=\"$chain\"}[1m]))",
@@ -2671,7 +2671,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P1809F7CD0C75ACF3"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "sum by (chain) (rate(avalanche_meterchainvm_accept_sum{chain=\"$chain\"}[1m])) / sum by (chain) (rate(avalanche_meterchainvm_parse_block_sum{chain=\"$chain\"}[1m]) + rate(avalanche_meterchainvm_verify_sum{chain=\"$chain\"}[1m]) + rate(avalanche_meterchainvm_accept_sum{chain=\"$chain\"}[1m]))",
@@ -2688,7 +2688,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "P1809F7CD0C75ACF3"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2782,7 +2782,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "P1809F7CD0C75ACF3"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2876,7 +2876,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "P1809F7CD0C75ACF3"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2977,17 +2977,17 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "prometheus",
-          "value": "P1809F7CD0C75ACF3"
-        },
+        "hide": 0,
         "includeAll": false,
         "label": "Data Source",
+        "multi": false,
         "name": "datasource",
         "options": [],
         "query": "prometheus",
+        "queryValue": "",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "type": "datasource"
       },
       {
@@ -3015,12 +3015,12 @@
     ]
   },
   "time": {
-    "from": "2025-07-03T19:06:18.000Z",
-    "to": "2025-07-03T19:21:18.000Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "America/New_York",
-  "title": "C-Chain 2",
+  "title": "C-Chain",
   "uid": "Gl1I20mnk1",
   "version": 1
 }

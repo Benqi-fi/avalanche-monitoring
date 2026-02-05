@@ -13,7 +13,7 @@ fi
 
 #helper function that prints usage
 usage () {
-  echo "Usage: $0 [--1|--2|--3|--4|--5|--help]"
+  echo "Usage: $0 [--1|--2|--3|--4|--help]"
   echo ""
   echo "Options:"
   echo "   --help   Shows this message"
@@ -21,7 +21,6 @@ usage () {
   echo "   --2      Step 2: Installs Grafana"
   echo "   --3      Step 3: Installs node_exporter"
   echo "   --4      Step 4: Installs AvalancheGo Grafana dashboards"
-  echo "   --5      Step 5: (Optional) Installs additional dashboards"
   echo ""
   echo "Run without any options, script will download and install latest version of AvalancheGo dashboards."
 }
@@ -297,16 +296,14 @@ install_dashboards() {
   mkdir -p /tmp/avalanche-monitoring-installer/dashboards-install
   cd /tmp/avalanche-monitoring-installer/dashboards-install
 
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/c_chain.json
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/database.json
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/machine.json
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/main.json
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/network.json
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/p_chain.json
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/x_chain.json
-  if test -f "/etc/grafana/dashboards/subnets.json"; then
-    wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/subnets.json
-  fi
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/c_chain.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/database.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/logs.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/machine.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/main.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/network.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/p_chain.json
+  wget -nd -m -nv https://raw.githubusercontent.com/Benqi-fi/avalanche-monitoring/master/grafana/dashboards/x_chain.json
 
   sudo mkdir -p /etc/grafana/dashboards
   sudo cp *.json /etc/grafana/dashboards
@@ -357,39 +354,6 @@ install_dashboards() {
   echo "Reach out to us on https://chat.avax.network if you're having problems."
 }
 
-install_extras() {
-  #check for installation
-  if test -f "/etc/grafana/grafana.ini"; then
-    echo "AvalancheGo monitoring installer"
-    echo "--------------------------------"
-  else
-    echo "Node monitoring installation not found!"
-    echo
-    echo "Please refer to the tutorial:"
-    echo "https://docs.avax.network/nodes/maintain/setting-up-node-monitoring"
-    echo
-    usage
-    exit 0
-  fi
-
-  echo "STEP 5: Installing additional dashboards"
-  echo
-  echo "Downloading..."
-  mkdir -p /tmp/avalanche-monitoring-installer/dashboards-install
-  cd /tmp/avalanche-monitoring-installer/dashboards-install
-
-  wget -nd -m -nv https://raw.githubusercontent.com/ava-labs/avalanche-monitoring/master/grafana/dashboards/subnets.json
-
-  sudo mkdir -p /etc/grafana/dashboards
-  sudo cp subnets.json /etc/grafana/dashboards
-
-  echo
-  echo "Done!"
-  echo
-  echo "Additional Grafana dashboards have been installed and updated."
-  echo "It might take up to 30s for new versions to show up in Grafana."
-}
-
 if [ $# -ne 0 ] #arguments check
 then
   case $1 in
@@ -407,10 +371,6 @@ then
       ;;
     --4) #install AvalancheGo dashboards
       install_dashboards
-      exit 0
-      ;;
-    --5) #install extra dashboards
-      install_extras
       exit 0
       ;;
     --help)
