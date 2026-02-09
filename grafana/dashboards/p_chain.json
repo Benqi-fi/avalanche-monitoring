@@ -1354,7 +1354,7 @@
         },
         "definition": "label_values(node)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "Node",
         "multi": true,
         "name": "node",
@@ -1364,7 +1364,16 @@
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
-        "type": "query"
+        "type": "query",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        }
       },
       {
         "datasource": {
