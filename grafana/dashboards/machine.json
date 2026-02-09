@@ -180,7 +180,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "Include I/O from applications other than AvalancheGo",
+      "description": "Includes I/O from applications other than AvalancheGo. Filtered by selected node(s).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -247,7 +247,7 @@
             "max"
           ],
           "displayMode": "table",
-          "placement": "right"
+          "placement": "bottom"
         },
         "tooltip": {
           "mode": "single",
@@ -257,20 +257,20 @@
       "pluginVersion": "8.0.5",
       "targets": [
         {
-          "expr": "rate(node_network_receive_bytes_total[5m])",
+          "expr": "rate(node_network_receive_bytes_total{job=~\"avalanchego-machine\", node=~\"$node\"}[5m])",
           "interval": "",
           "legendFormat": "{{node}} Receive {{device}}",
           "refId": "A"
         },
         {
-          "expr": "rate(node_network_transmit_bytes_total[5m])",
+          "expr": "rate(node_network_transmit_bytes_total{job=~\"avalanchego-machine\", node=~\"$node\"}[5m])",
           "hide": false,
           "interval": "",
           "legendFormat": "{{node}} Transmit {{device}}",
           "refId": "B"
         }
       ],
-      "title": "Machine Network I/O",
+      "title": "Network I/O",
       "type": "timeseries"
     },
     {
@@ -278,7 +278,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "Includes I/O from applications other than AvalancheGo",
+      "description": "Includes I/O from applications other than AvalancheGo. Filtered by selected node(s).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -341,7 +341,7 @@
             "max"
           ],
           "displayMode": "table",
-          "placement": "right"
+          "placement": "bottom"
         },
         "tooltip": {
           "mode": "single",
@@ -355,7 +355,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(node_disk_read_bytes_total[5m])",
+          "expr": "rate(node_disk_read_bytes_total{job=~\"avalanchego-machine\", node=~\"$node\"}[5m])",
           "interval": "",
           "legendFormat": "{{node}} Read {{device}}",
           "refId": "A"
@@ -365,7 +365,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(node_disk_written_bytes_total[5m])",
+          "expr": "rate(node_disk_written_bytes_total{job=~\"avalanchego-machine\", node=~\"$node\"}[5m])",
           "hide": false,
           "interval": "",
           "legendFormat": "{{node}} Write {{device}}",
