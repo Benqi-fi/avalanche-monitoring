@@ -713,7 +713,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "max by (node) (((node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"} - node_filesystem_free_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) / node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|vfat\"}) * 100)",
+          "expr": "max by (node) (((node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|xfs|btrfs|zfs|vfat\"} - node_filesystem_free_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|xfs|btrfs|zfs|vfat\"}) / node_filesystem_size_bytes{job=~\"avalanchego-machine\", node=~\"$node\", fstype=~\"ext4|xfs|btrfs|zfs|vfat\"}) * 100)",
           "interval": "",
           "legendFormat": "{{node}}",
           "refId": "A"
