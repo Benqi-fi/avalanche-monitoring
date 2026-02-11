@@ -7,23 +7,24 @@ set -e
 
 #helper function that prints usage
 usage () {
-  echo "Usage: $0 [--1|--2|--3|--4|--5|--6|--node|--help]"
+  echo "Usage: $0 [--1|--2|--3|--4|--5|--6|--node|--add-node|--help]"
   echo ""
   echo "Options:"
-  echo "   --help   Shows this message"
+  echo "   --help       Shows this message"
   echo ""
   echo "   Monitoring Server (central):"
-  echo "   --1      Step 1: Installs Prometheus"
-  echo "   --2      Step 2: Installs Grafana"
-  echo "   --4      Step 4: Installs AvalancheGo Grafana dashboards"
-  echo "   --5      Step 5: Installs Loki (log aggregation server)"
+  echo "   --1          Step 1: Installs Prometheus"
+  echo "   --2          Step 2: Installs Grafana"
+  echo "   --4          Step 4: Installs AvalancheGo Grafana dashboards"
+  echo "   --5          Step 5: Installs Loki (log aggregation server)"
+  echo "   --add-node   Adds a remote Avalanche node to Prometheus scrape targets"
   echo ""
   echo "   Avalanche Nodes (each node):"
-  echo "   --3      Step 3: Installs node_exporter (metrics)"
-  echo "   --6      Step 6: Installs Promtail (log shipper to Loki)"
+  echo "   --3          Step 3: Installs node_exporter (metrics)"
+  echo "   --6          Step 6: Installs Promtail (log shipper to Loki)"
   echo ""
   echo "   All-in-one:"
-  echo "   --node   Runs steps 1, 2, 3, 4, and 6 (full single-node setup)"
+  echo "   --node       Runs steps 1, 2, 3, 4, and 6 (full single-node setup)"
   echo ""
   echo "Run without any options, script will download and install latest version of AvalancheGo dashboards."
 }
@@ -548,6 +549,184 @@ PROMTAILSERVICE
   echo
 }
 
+add_node() {
+  echo "AvalancheGo monitoring installer"
+  echo "--------------------------------"
+  echo "Add remote Avalanche node to Prometheus monitoring"
+  echo
+  echo "Run this on your MONITORING SERVER to add a remote node as a scrape target."
+  echo
+
+  PROM_CONFIG="/etc/prometheus/prometheus.yml"
+  if [ ! -f "$PROM_CONFIG" ]; then
+    echo "Error: $PROM_CONFIG not found."
+    echo "Please install Prometheus first (--1)."
+    exit 1
+  fi
+
+  read -p "Enter node IP address: " NODE_IP
+  if [ -z "$NODE_IP" ]; then
+    echo "IP address is required. Exiting."
+    exit 1
+  fi
+
+  # Check for duplicate
+  if grep -q "${NODE_IP}:" "$PROM_CONFIG"; then
+    echo
+    echo "Warning: ${NODE_IP} already exists in ${PROM_CONFIG}."
+    read -p "Add anyway? (y/N): " CONFIRM
+    if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "Y" ]; then
+      echo "Aborted."
+      exit 0
+    fi
+  fi
+
+  read -p "Enter node name (e.g., aws-validator-01): " NODE_NAME
+  if [ -z "$NODE_NAME" ]; then
+    echo "Node name is required. Exiting."
+    exit 1
+  fi
+
+  read -p "Enter cloud/provider label (e.g., aws, gcp): " NODE_CLOUD
+  if [ -z "$NODE_CLOUD" ]; then
+    echo "Cloud label is required. Exiting."
+    exit 1
+  fi
+
+  echo
+  echo "Will add the following Prometheus scrape targets:"
+  echo "  Node:        ${NODE_NAME} (${NODE_CLOUD})"
+  echo "  AvalancheGo: ${NODE_IP}:9650  (metrics_path: /ext/metrics)"
+  echo "  Machine:     ${NODE_IP}:9100  (node_exporter)"
+  echo "  Prometheus:  ${NODE_IP}:9090  (remote prometheus)"
+  echo
+  read -p "Proceed? (Y/n): " PROCEED
+  if [ "$PROCEED" = "n" ] || [ "$PROCEED" = "N" ]; then
+    echo "Aborted."
+    exit 0
+  fi
+
+  # Backup
+  sudo cp "$PROM_CONFIG" "${PROM_CONFIG}.bak"
+  echo "Backup saved to ${PROM_CONFIG}.bak"
+
+  # Work on a temp copy
+  TEMP_CONFIG="/tmp/prometheus_edit_$$.yml"
+  sudo cp "$PROM_CONFIG" "$TEMP_CONFIG"
+  sudo chmod 644 "$TEMP_CONFIG"
+
+  #helper: insert a target block at the end of a named job section
+  #usage: insert_into_job <job_name_pattern> <entry_text> <config_file>
+  #returns 0 if job found and entry inserted, 1 if job not found
+  insert_into_job() {
+    local pattern="$1"
+    local insert_text="$2"
+    local config="$3"
+
+    local job_line
+    job_line=$(grep -n "job_name.*${pattern}" "$config" | head -1 | cut -d: -f1)
+    if [ -z "$job_line" ]; then
+      return 1
+    fi
+
+    # find the next job_name after this one (marks end of current job section)
+    local next_job_offset
+    next_job_offset=$(tail -n +"$((job_line + 1))" "$config" | grep -n "^[[:space:]]*- job_name:" | head -1 | cut -d: -f1)
+
+    local total_lines
+    total_lines=$(wc -l < "$config")
+
+    local insert_at
+    if [ -n "$next_job_offset" ]; then
+      # insert before the next job_name line
+      insert_at=$((job_line + next_job_offset))
+    else
+      # last job in file — append after the last line
+      insert_at=$((total_lines + 1))
+    fi
+
+    # split file at insertion point and rebuild
+    {
+      head -n "$((insert_at - 1))" "$config"
+      printf '%s\n' "$insert_text"
+      if [ "$insert_at" -le "$total_lines" ]; then
+        tail -n +"$insert_at" "$config"
+      fi
+    } > "${config}.tmp"
+    mv "${config}.tmp" "$config"
+
+    return 0
+  }
+
+  # target entries (inline label format matching user's config style)
+  AVAGO_ENTRY=$(printf '      - targets: ['\''%s:9650'\'']\n        labels: { node: '\''%s'\'', cloud: '\''%s'\'' }' "$NODE_IP" "$NODE_NAME" "$NODE_CLOUD")
+  MACHINE_ENTRY=$(printf '      - targets: ['\''%s:9100'\'']\n        labels: { node: '\''%s'\'', cloud: '\''%s'\'' }' "$NODE_IP" "$NODE_NAME" "$NODE_CLOUD")
+  METRICS_ENTRY=$(printf '      - targets: ['\''%s:9090'\'']\n        labels: { node: '\''%s'\'', cloud: '\''%s'\'' }' "$NODE_IP" "$NODE_NAME" "$NODE_CLOUD")
+
+  echo
+
+  # 1) avalanchego job (port 9650, /ext/metrics)
+  if insert_into_job "'avalanchego'" "$AVAGO_ENTRY" "$TEMP_CONFIG"; then
+    echo "  Added ${NODE_IP}:9650 to 'avalanchego' job"
+  else
+    echo "  Creating 'avalanchego' job with first target..."
+    {
+      echo "  - job_name: 'avalanchego'"
+      echo "    metrics_path: '/ext/metrics'"
+      echo "    scrape_interval: 15s"
+      echo "    scrape_timeout: 10s"
+      echo "    static_configs:"
+      printf '%s\n' "$AVAGO_ENTRY"
+    } >> "$TEMP_CONFIG"
+  fi
+
+  # 2) avalanchego-machine job (port 9100, node_exporter)
+  if insert_into_job "avalanchego-machine" "$MACHINE_ENTRY" "$TEMP_CONFIG"; then
+    echo "  Added ${NODE_IP}:9100 to 'avalanchego-machine' job"
+  else
+    echo "  Creating 'avalanchego-machine' job with first target..."
+    {
+      echo "  - job_name: 'avalanchego-machine'"
+      echo "    scrape_interval: 15s"
+      echo "    scrape_timeout: 10s"
+      echo "    static_configs:"
+      printf '%s\n' "$MACHINE_ENTRY"
+    } >> "$TEMP_CONFIG"
+  fi
+
+  # 3) avalanche_nodes job (port 9090, remote prometheus)
+  if insert_into_job "avalanche_nodes" "$METRICS_ENTRY" "$TEMP_CONFIG"; then
+    echo "  Added ${NODE_IP}:9090 to 'avalanche_nodes' job"
+  else
+    echo "  Creating 'avalanche_nodes' job with first target..."
+    {
+      echo "  - job_name: 'avalanche_nodes'"
+      echo "    metrics_path: /metrics"
+      echo "    scheme: http"
+      echo "    scrape_interval: 15s"
+      echo "    scrape_timeout: 10s"
+      echo "    static_configs:"
+      printf '%s\n' "$METRICS_ENTRY"
+    } >> "$TEMP_CONFIG"
+  fi
+
+  # Apply changes
+  sudo cp "$TEMP_CONFIG" "$PROM_CONFIG"
+  sudo chown prometheus:prometheus "$PROM_CONFIG"
+  rm -f "$TEMP_CONFIG"
+
+  echo
+  echo "Restarting Prometheus..."
+  sudo systemctl restart prometheus
+
+  echo
+  echo "Done!"
+  echo
+  echo "Node '${NODE_NAME}' (${NODE_IP}) has been added to Prometheus."
+  echo "Verify targets at: http://localhost:9090/targets"
+  echo
+}
+
 install_node() {
   echo "AvalancheGo monitoring installer"
   echo "--------------------------------"
@@ -700,6 +879,10 @@ then
       ;;
     --node) #full single-node setup (steps 1, 2, 3, 4, 6)
       install_node
+      exit 0
+      ;;
+    --add-node) #add remote node to Prometheus scrape targets
+      add_node
       exit 0
       ;;
     --help)

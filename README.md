@@ -13,20 +13,21 @@ chmod +x monitoring-installer.sh
 ## Installation Options
 
 ```
-Usage: monitoring-installer.sh [--1|--2|--3|--4|--5|--6|--node|--help]
+Usage: monitoring-installer.sh [--1|--2|--3|--4|--5|--6|--node|--add-node|--help]
 
 Monitoring Server (central):
-   --1      Installs Prometheus
-   --2      Installs Grafana
-   --4      Installs AvalancheGo Grafana dashboards
-   --5      Installs Loki (log aggregation server)
+   --1          Installs Prometheus
+   --2          Installs Grafana
+   --4          Installs AvalancheGo Grafana dashboards
+   --5          Installs Loki (log aggregation server)
+   --add-node   Adds a remote Avalanche node to Prometheus scrape targets
 
 Avalanche Nodes (each node):
-   --3      Installs node_exporter (metrics)
-   --6      Installs Promtail (log shipper to Loki)
+   --3          Installs node_exporter (metrics)
+   --6          Installs Promtail (log shipper to Loki)
 
 All-in-one:
-   --node   Runs steps 1, 2, 3, 4, and 6 (full single-node setup)
+   --node       Runs steps 1, 2, 3, 4, and 6 (full single-node setup)
 ```
 
 ## Architecture
@@ -85,33 +86,25 @@ When running `--6`, you'll be prompted for:
 - Node name (e.g., `aws-validator-01`)
 - Network identifier (e.g., `mainnet`)
 
-### Configure Prometheus Targets
+### Add Remote Nodes to Prometheus
 
-Edit `/etc/prometheus/prometheus.yml` on your monitoring server to scrape all nodes:
+On your monitoring server, run `--add-node` for each remote Avalanche node:
 
-```yaml
-scrape_configs:
-  - job_name: 'avalanchego'
-    metrics_path: '/ext/metrics'
-    static_configs:
-      - targets: ['node1-ip:9650', 'node2-ip:9650']
-        labels:
-          node: 'node1'
-      - targets: ['node2-ip:9650']
-        labels:
-          node: 'node2'
-
-  - job_name: 'avalanchego-machine'
-    static_configs:
-      - targets: ['node1-ip:9100']
-        labels:
-          node: 'node1'
-      - targets: ['node2-ip:9100']
-        labels:
-          node: 'node2'
+```bash
+./monitoring-installer.sh --add-node
 ```
 
-Then restart Prometheus: `sudo systemctl restart prometheus`
+You'll be prompted for:
+- **IP address** of the remote node
+- **Node name** (e.g., `aws-validator-01`)
+- **Cloud/provider label** (e.g., `aws`, `gcp`)
+
+The command automatically adds the node to three Prometheus scrape jobs:
+- `avalanchego` — AvalancheGo API metrics (port 9650)
+- `avalanchego-machine` — node_exporter metrics (port 9100)
+- `avalanche_nodes` — remote Prometheus metrics (port 9090)
+
+If a job doesn't exist yet, it will be created. A backup of `prometheus.yml` is saved before each change.
 
 ## Dashboards
 
