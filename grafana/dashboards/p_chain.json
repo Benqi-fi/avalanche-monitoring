@@ -606,7 +606,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "avalanche_snowman_polls{chain=\"P\"} > 0",
+          "expr": "avalanche_snowman_polls{chain=\"P\", job=\"avalanchego\", node=~\"$node\"} > 0",
           "interval": "",
           "legendFormat": "Polls {{node}}",
           "refId": "A"
@@ -1013,7 +1013,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "avalanche_handler_sync_unprocessed_msgs_count{chain=\"P\"}",
+          "expr": "avalanche_handler_sync_unprocessed_msgs_count{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
           "legendFormat": "{{node}} {{ op }}",
           "refId": "A"
@@ -1024,7 +1024,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "avalanche_handler_async_unprocessed_msgs_count{chain=\"P\"}",
+          "expr": "avalanche_handler_async_unprocessed_msgs_count{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
           "legendFormat": "{{node}} {{ op }}",
           "refId": "B"

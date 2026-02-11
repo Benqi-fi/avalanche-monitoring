@@ -784,7 +784,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "avalanche_health_checks_failing{check=\"health\",job=\"avalanchego\",tag=\"all\"}",
+          "expr": "avalanche_health_checks_failing{check=\"health\", job=\"avalanchego\", tag=\"all\", node=~\"$node\"}",
           "interval": "",
           "legendFormat": "{{node}}",
           "range": true,
@@ -863,7 +863,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "avalanche_requests_average_latency",
+          "expr": "avalanche_requests_average_latency{job=\"avalanchego\", node=~\"$node\"}",
           "interval": "",
           "legendFormat": "{{node}}",
           "refId": "A"

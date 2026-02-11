@@ -1516,7 +1516,7 @@
       "pluginVersion": "8.0.3",
       "targets": [
         {
-          "expr": "avalanche_benchlist_benched_weight/1000000000",
+          "expr": "avalanche_benchlist_benched_weight{job=\"avalanchego\", node=~\"$node\"}/1000000000",
           "interval": "",
           "legendFormat": "{{ chain }} {{node}}",
           "refId": "A"
@@ -2672,7 +2672,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "increase(avalanche_network_msgs_failed_to_parse[1m])",
+          "expr": "increase(avalanche_network_msgs_failed_to_parse{job=\"avalanchego\", node=~\"$node\"}[1m])",
           "interval": "",
           "legendFormat": "Failed to Parse {{node}}",
           "refId": "A"
@@ -2764,7 +2764,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (node) (increase(avalanche_handler_expired[1m]) or 0 * up)",
+          "expr": "sum by (node) (increase(avalanche_handler_expired{job=\"avalanchego\", node=~\"$node\"}[1m]) or 0 * up{job=\"avalanchego\", node=~\"$node\"})",
           "interval": "",
           "legendFormat": "Messages Dropped {{node}}",
           "refId": "A"
@@ -3057,7 +3057,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "increase(avalanche_network_codec_compressed_duration{direction=\"compression\"}[5m])/increase(avalanche_network_codec_compressed_count{direction=\"compression\"}[5m])",
+          "expr": "increase(avalanche_network_codec_compressed_duration{direction=\"compression\", job=\"avalanchego\", node=~\"$node\"}[5m])/increase(avalanche_network_codec_compressed_count{direction=\"compression\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "hide": false,
           "interval": "",
           "legendFormat": "{{ op }} {{ type }} {{node}}",
@@ -3156,7 +3156,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "increase(avalanche_network_codec_compressed_duration{direction=\"decompression\"}[5m])/increase(avalanche_network_codec_compressed_count{direction=\"decompression\"}[5m])",
+          "expr": "increase(avalanche_network_codec_compressed_duration{direction=\"decompression\", job=\"avalanchego\", node=~\"$node\"}[5m])/increase(avalanche_network_codec_compressed_count{direction=\"decompression\", job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
           "legendFormat": "{{ op }} {{ type }} {{node}}",
           "refId": "A"
@@ -3248,7 +3248,7 @@
       },
       "targets": [
         {
-          "expr": "rate(avalanche_network_msgs_bytes_saved[5m])",
+          "expr": "rate(avalanche_network_msgs_bytes_saved{job=\"avalanchego\", node=~\"$node\"}[5m])",
           "interval": "",
           "legendFormat": "{{ io }} {{ op }} {{node}}",
           "refId": "A"
