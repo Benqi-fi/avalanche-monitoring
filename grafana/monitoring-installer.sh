@@ -91,6 +91,18 @@ install_prometheus() {
   mkdir -p prometheus
   tar xvf prometheus.tar.gz -C prometheus --strip-components=1
   echo "Installing..."
+
+  if dpkg -l prometheus 2>/dev/null | grep -q '^ii'; then
+    echo "Found Debian-packaged Prometheus, removing to avoid conflicts..."
+    sudo systemctl stop prometheus 2>/dev/null || true
+    sudo apt-get remove -y prometheus
+    sudo rm -f /lib/systemd/system/prometheus.service
+    sudo systemctl daemon-reload
+    echo "Debian package removed. Config and data are preserved."
+  fi
+
+  sudo systemctl stop prometheus 2>/dev/null || true
+
   id -u prometheus &>/dev/null || sudo useradd -M -r -s /bin/false prometheus
   sudo mkdir -p /etc/prometheus /var/lib/prometheus
   sudo apt-get install -y apt-transport-https software-properties-common
@@ -99,7 +111,11 @@ install_prometheus() {
   sudo chown prometheus:prometheus /usr/local/bin/{prometheus,promtool}
   sudo chown -R prometheus:prometheus /etc/prometheus
   sudo chown prometheus:prometheus /var/lib/prometheus
-  sudo cp prometheus.yml /etc/prometheus/
+  if [ ! -f /etc/prometheus/prometheus.yml ]; then
+    sudo cp prometheus.yml /etc/prometheus/
+  else
+    echo "Existing prometheus.yml found, keeping current config."
+  fi
 
   #creating the service file
   {
@@ -114,14 +130,14 @@ install_prometheus() {
     echo "User=prometheus"
     echo "Group=prometheus"
     echo "ExecReload=/bin/kill -HUP \$MAINPID"
-    echo "ExecStart=/usr/local/bin/prometheus   --config.file=/etc/prometheus/prometheus.yml   --storage.tsdb.path=/var/lib/prometheus   --web.listen-address=0.0.0.0:9090   --web.external-url="
+    echo "ExecStart=/usr/local/bin/prometheus   --config.file=/etc/prometheus/prometheus.yml   --storage.tsdb.path=/var/lib/prometheus   --web.listen-address=0.0.0.0:9090   --web.external-url=   --enable-feature=promql-experimental-functions"
     echo ""
     echo "SyslogIdentifier=prometheus"
     echo "Restart=always"
     echo ""
     echo "[Install]"
     echo "WantedBy=multi-user.target"
-  }>>prometheus.service
+  }>prometheus.service
   sudo cp prometheus.service /etc/systemd/system/prometheus.service
 
   echo "Creating Prometheus service..."
