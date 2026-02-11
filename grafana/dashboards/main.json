@@ -1558,7 +1558,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (chain)(increase(avalanche_handler_messages{op=\"chits\", job=\"avalanchego\", node=~\"$node\"}[1m]))",
+          "expr": "sum by (node, chain)(increase(avalanche_handler_messages{op=\"chits\", job=\"avalanchego\", node=~\"$node\"}[1m]))",
           "hide": true,
           "interval": "",
           "legendFormat": "{{ chain }} Chain {{node}}",
@@ -1569,7 +1569,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum by (chain)(increase(avalanche_handler_messages{op=\"query_failed\", job=\"avalanchego\", node=~\"$node\"}[1m]))",
+          "expr": "sum by (node, chain)(increase(avalanche_handler_messages{op=\"query_failed\", job=\"avalanchego\", node=~\"$node\"}[1m]))",
           "hide": true,
           "interval": "",
           "legendFormat": "{{ chain }} Chain {{node}}",
