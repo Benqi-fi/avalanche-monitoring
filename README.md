@@ -13,7 +13,7 @@ chmod +x monitoring-installer.sh
 ## Installation Options
 
 ```
-Usage: monitoring-installer.sh [--1|--2|--3|--4|--5|--6|--help]
+Usage: monitoring-installer.sh [--1|--2|--3|--4|--5|--6|--node|--help]
 
 Monitoring Server (central):
    --1      Installs Prometheus
@@ -24,6 +24,9 @@ Monitoring Server (central):
 Avalanche Nodes (each node):
    --3      Installs node_exporter (metrics)
    --6      Installs Promtail (log shipper to Loki)
+
+All-in-one:
+   --node   Runs steps 1, 2, 3, 4, and 6 (full single-node setup)
 ```
 
 ## Architecture
@@ -48,6 +51,14 @@ Avalanche Nodes (each node):
 ```
 
 ## Setup Guide
+
+### Single-Node Setup (All-in-One)
+
+If your Avalanche node and monitoring stack run on the same machine:
+
+```bash
+./monitoring-installer.sh --node   # Installs Prometheus, Grafana, node_exporter, dashboards, and Promtail
+```
 
 ### Monitoring Server Setup
 

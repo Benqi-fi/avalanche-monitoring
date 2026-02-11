@@ -7,7 +7,7 @@ set -e
 
 #helper function that prints usage
 usage () {
-  echo "Usage: $0 [--1|--2|--3|--4|--5|--6|--help]"
+  echo "Usage: $0 [--1|--2|--3|--4|--5|--6|--node|--help]"
   echo ""
   echo "Options:"
   echo "   --help   Shows this message"
@@ -21,6 +21,9 @@ usage () {
   echo "   Avalanche Nodes (each node):"
   echo "   --3      Step 3: Installs node_exporter (metrics)"
   echo "   --6      Step 6: Installs Promtail (log shipper to Loki)"
+  echo ""
+  echo "   All-in-one:"
+  echo "   --node   Runs steps 1, 2, 3, 4, and 6 (full single-node setup)"
   echo ""
   echo "Run without any options, script will download and install latest version of AvalancheGo dashboards."
 }
@@ -138,8 +141,6 @@ install_prometheus() {
   echo "https://docs.avax.network/nodes/maintain/setting-up-node-monitoring#grafana"
   echo
   echo "Reach out to us on https://chat.avax.network if you're having problems."
-
-  exit 0
 }
 
 install_grafana() {
@@ -171,8 +172,6 @@ install_grafana() {
   echo "https://docs.avax.network/nodes/maintain/setting-up-node-monitoring#exporter"
   echo
   echo "Reach out to us on https://chat.avax.network if you're having problems."
-
-  exit 0
 }
 
 install_exporter() {
@@ -392,8 +391,6 @@ LOKISERVICE
   echo "1. Run --4 to install dashboards (includes Loki datasource)"
   echo "2. Run --6 on each Avalanche node to install Promtail"
   echo
-
-  exit 0
 }
 
 install_promtail() {
@@ -546,8 +543,35 @@ PROMTAILSERVICE
   echo
   echo "To verify logs are being shipped, check the Logs dashboard in Grafana."
   echo
+}
 
-  exit 0
+install_node() {
+  echo "AvalancheGo monitoring installer"
+  echo "--------------------------------"
+  echo "Full single-node setup: Steps 1, 2, 3, 4, and 6"
+  echo
+  install_prometheus
+  echo
+  install_grafana
+  echo
+  install_exporter
+  echo
+  install_dashboards
+  echo
+  install_promtail
+  echo
+  echo "========================================"
+  echo "Full single-node setup complete!"
+  echo "========================================"
+  echo
+  echo "Services installed:"
+  echo "  - Prometheus  (http://localhost:9090)"
+  echo "  - Grafana     (http://localhost:3000)"
+  echo "  - node_exporter"
+  echo "  - AvalancheGo dashboards"
+  echo "  - Promtail"
+  echo
+  echo "Reach out to us on https://chat.avax.network if you're having problems."
 }
 
 install_dashboards() {
@@ -669,6 +693,10 @@ then
       ;;
     --6) #install Promtail
       install_promtail
+      exit 0
+      ;;
+    --node) #full single-node setup (steps 1, 2, 3, 4, 6)
+      install_node
       exit 0
       ;;
     --help)
