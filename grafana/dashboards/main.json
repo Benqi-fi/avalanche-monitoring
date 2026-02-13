@@ -377,7 +377,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "round(increase(avalanche_snowman_blks_built{chain=\"X\", job=\"avalanchego\", node=~\"$node\"}[1d]))",
+          "expr": "round(increase(avalanche_snowman_blks_built{chain=\"X\", job=\"avalanchego\", node=~\"$node\"}[$__range]))",
           "interval": "",
           "legendFormat": "Proposed X blocks {{node}}",
           "range": true,
@@ -557,7 +557,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "round(increase(avalanche_snowman_blks_built{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[1d]))",
+          "expr": "round(increase(avalanche_snowman_blks_built{chain=\"P\", job=\"avalanchego\", node=~\"$node\"}[$__range]))",
           "interval": "",
           "legendFormat": "Proposed P blocks {{node}}",
           "refId": "A"
@@ -1366,7 +1366,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "round(increase(avalanche_snowman_blks_built{chain=\"C\", job=\"avalanchego\", node=~\"$node\"}[1d]))",
+          "expr": "round(increase(avalanche_snowman_blks_built{chain=\"C\", job=\"avalanchego\", node=~\"$node\"}[$__range]))",
           "interval": "",
           "legendFormat": "Built C blocks {{node}}",
           "refId": "A"
